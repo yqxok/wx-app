@@ -8,15 +8,17 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 /*
-* 收藏
-* */
-@Data
-public class Collect {
-    @TableId
-    private Long collectId;
-    private Long userId;
-    private Long goodId;
-    @TableField(fill= FieldFill.INSERT)
-    private LocalDateTime createTime;
-}
+* 聊天记录
+*/
 
+@Data
+public class ChatContent {
+    @TableId
+    private Long chatId;
+    private Long SendUserId;
+    private Long receiveUserId;
+    private String content;
+    @TableField(fill = FieldFill.INSERT)
+    private LocalDateTime sendTime;
+
+}

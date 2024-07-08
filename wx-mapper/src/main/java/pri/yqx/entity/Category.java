@@ -1,22 +1,22 @@
 package pri.yqx.entity;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 
 import java.time.LocalDateTime;
 
-/*
-* 收藏
-* */
 @Data
-public class Collect {
+public class Category {
     @TableId
-    private Long collectId;
-    private Long userId;
-    private Long goodId;
+    private Long categoryId;
+    private String categoryName;
+    //自关联的id
+    private Long pkId;
     @TableField(fill= FieldFill.INSERT)
     private LocalDateTime createTime;
+    private Long createUser;
+    private Boolean isDeleted;
 }
-

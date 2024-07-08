@@ -4,8 +4,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class MapperApplication {
+public class TestApplication {
     public static void main(String[] args) {
-        SpringApplication.run(MapperApplication.class,args);
+        SpringApplication.run(TestApplication.class,args);
     }
 }

@@ -1,5 +1,8 @@
 package pri.yqx.entity;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 import pri.yqx.enums.AccountType;
 import pri.yqx.enums.Gender;
@@ -8,7 +11,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 @Data
 public class User {
-    //id
+    @TableId
     private Long userId;
     private String userName;
     private String password;
@@ -20,6 +23,7 @@ public class User {
     private String bio;
     //头像url
     private String profilePicUrl;
+    @TableField(fill= FieldFill.INSERT)
     private LocalDateTime createTime;
     private LocalDateTime lastLogin;
     //宿舍id

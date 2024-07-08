@@ -7,16 +7,17 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 
-/*
-* 收藏
-* */
 @Data
-public class Collect {
+public class GoodComment {
     @TableId
-    private Long collectId;
-    private Long userId;
+    private Long commentId;
     private Long goodId;
+    private Long userId;
+    private String content;
+    //子评论
+    private Long sonId;
+    //父评论
+    private Long fatherId;
     @TableField(fill= FieldFill.INSERT)
     private LocalDateTime createTime;
 }
-
