@@ -3,8 +3,8 @@ package pri.yqx.enums;
 import com.baomidou.mybatisplus.annotation.IEnum;
 
 public enum AccountType implements IEnum<String> {
-    REGULAR("Regular"),SELLER("Seller"),ADMIN("Admin");
-    private String sort;
+    REGULAR("REGULAR"),SELLER("SELLER"),ADMIN("ADMIN");
+    final private String sort;
     AccountType(String sort){
         this.sort=sort;
     }

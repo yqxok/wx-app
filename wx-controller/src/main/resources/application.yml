@@ -1,0 +1,17 @@
+spring:
+  profiles:
+    active: mapper
+#微信服务器密钥
+wechat:
+  app-id: wxf5df1890a4748e65
+  app-secret: 8ba41e7df23ca7733151a6b42af3880f
+  login_url: https://api.weixin.qq.com/sns/jscode2session?appid=%s&secret=%s&js_code=%s&grant_type=authorization_code
+oss:
+  access-key: J0t_zI1a1lRNJ9OLmnwYoEs5NJzpREwRePkP7b2U
+  secret-key: dcAT3Uizve0DzKY7VOo4Nq8RIXMqLnX8ZDFaa5P0
+  bucket: yqx-storage
+  host: http://sge9cddv1.hn-bkt.clouddn.com/
+server:
+  port: 7001
+  servlet:
+    context-path: /api
