@@ -24,6 +24,7 @@ public class Category {
     private LocalDateTime createTime;
     @NotNull
     private Long createUser;
+
     private Boolean isDeleted;
 
 

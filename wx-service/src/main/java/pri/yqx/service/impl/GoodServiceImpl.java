@@ -27,20 +27,26 @@ public class GoodServiceImpl extends ServiceImpl<GoodMapper, Good> implements Go
     private CategoryService categoryService;
     @Resource
     private GoodCategoryService goodCategoryService;
+
     @Override
     public void saveGood(GoodDto goodDto) {
         Long count = userService.lambdaQuery().eq(User::getUserId, goodDto.getUserId()).count();
-        if(count<1)
+        if (count < 1)
             throw new RuntimeException("不存在该userId");
         List<Category> list = categoryService.lambdaQuery().in(Category::getCategoryId, goodDto.getCategories()).list();
 
-        if(list.size()!=goodDto.getCategories().size())
+        if (list.size() != goodDto.getCategories().size())
             throw new RuntimeException("categoryId有误");
+
         save(goodDto);
+
         List<GoodCategory> goodCategories = list.stream().map(category ->
-                new GoodCategory().setGoodId(goodDto.getGoodId())
-                        .setCategoryId(category.getCategoryId()).setCategoryName(category.getCategoryName())
+                new GoodCategory()
+                        .setGoodId(goodDto.getGoodId())
+                        .setCategoryId(category.getCategoryId())
+                        .setCategoryName(category.getCategoryName())
         ).collect(Collectors.toList());
+
         goodCategoryService.saveBatch(goodCategories);
     }
 }

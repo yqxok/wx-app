@@ -19,21 +19,23 @@ import javax.annotation.Resource;
 public class GoodOrderController {
     @Resource
     private GoodOrderService goodOrderService;
-    @PostMapping    //保存订单
-    public Result<String> saveGoodOrder(@RequestBody @Validated(Insert.class) GoodOrder goodOrder){
 
-        log.info("goodOrder={}",goodOrder);
+    @PostMapping    //保存订单
+    public Result<String> saveGoodOrder(@RequestBody @Validated(Insert.class) GoodOrder goodOrder) {
+
+        log.info("goodOrder={}", goodOrder);
         goodOrderService.saveGoodOrder(goodOrder);
-        return Result.success(null,"订单保存成功");
+        return Result.success(null, "订单保存成功");
     }
+
     @GetMapping("/{userId}/{page}/{pageSize}") //获取商品列表
-    public Result<Page<GoodOrder>> page(@PathVariable long userId, @PathVariable int page, @PathVariable int pageSize){
-        log.info("userId={},page={},pageSize={}",userId,page,pageSize);
-        Page<GoodOrder> orderPage = new Page<>(page,pageSize);
-        orderPage=goodOrderService.lambdaQuery().
-                eq(GoodOrder::getUserId,userId)
+    public Result<Page<GoodOrder>> page(@PathVariable long userId, @PathVariable int page, @PathVariable int pageSize) {
+        log.info("userId={},page={},pageSize={}", userId, page, pageSize);
+        Page<GoodOrder> orderPage = new Page<>(page, pageSize);
+        orderPage = goodOrderService.lambdaQuery()
+                .eq(GoodOrder::getUserId, userId)
                 .page(orderPage);
-        return Result.success(orderPage,"订单列表查询成功");
+        return Result.success(orderPage, "订单列表查询成功");
     }
 
 }

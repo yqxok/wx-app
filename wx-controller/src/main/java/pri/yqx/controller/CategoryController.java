@@ -16,6 +16,7 @@ import javax.validation.constraints.Min;
 public class CategoryController {
     @Resource
     private CategoryService categoryService;
+
     @PostMapping
     public Result<String> post(@RequestBody @Validated(Insert.class) Category category){
         categoryService.saveCategory(category);

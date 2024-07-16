@@ -1,22 +1,32 @@
-package pri.yqx.exception;
+package pri.yqx.handler;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.BindException;
 import org.springframework.validation.ObjectError;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import pri.yqx.common.Result;
+import pri.yqx.enums.GlobalStatusCode;
+import pri.yqx.exception.GlobalServiceException;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import java.util.stream.Collectors;
 
 @Slf4j
 @RestControllerAdvice
+public class GlobalExceptionHandler {
 
-public class GlobalException {
+    @ExceptionHandler(GlobalServiceException.class)
+    public Result handleGlobalServiceException(GlobalServiceException e, HttpServletRequest request) {
+        String requestURI = request.getRequestURI();
+        String message = e.getMessage();
+        GlobalStatusCode globalStatusCode = e.getCode();
+        log.error("请求地址'{}', {}: '{}'", requestURI, globalStatusCode, message);
+        return Result.error(globalStatusCode.getCode(),message);
+    }
+
     @ExceptionHandler(RuntimeException.class)
     public Result<String> exception(RuntimeException runtimeException){
 
