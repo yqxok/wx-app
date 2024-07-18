@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import pri.yqx.common.Result;
-import pri.yqx.util.QiniuOss;
+import pri.yqx.common.QiniuOss;
 
 import javax.annotation.Resource;
 import java.io.IOException;
@@ -25,6 +25,6 @@ public class UploadController {
         }else if(name.equals("good"))
            url=qiniuOss.uploadQiniu(file, "good");
 
-        return Result.success(url,"文件上传成功");
+        return Result.success(url,"upload success");
     }
 }

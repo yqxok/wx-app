@@ -1,5 +1,8 @@
 package pri.yqx.common;
 
+import lombok.Data;
+
+
 public class Result<T> {
     private int code;
     private String message;

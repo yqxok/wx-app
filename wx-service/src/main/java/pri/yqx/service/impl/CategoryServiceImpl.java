@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import jdk.internal.dynalink.support.Guards;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pri.yqx.dto.CategoryDto;
 import pri.yqx.entity.Category;
 import pri.yqx.entity.Good;
 import pri.yqx.entity.GoodCategory;
@@ -14,6 +15,7 @@ import pri.yqx.service.CategoryService;
 import pri.yqx.service.GoodCategoryService;
 import pri.yqx.service.GoodService;
 import pri.yqx.service.UserService;
+import pri.yqx.util.MyBeanUtils;
 
 import javax.annotation.Resource;
 import java.util.Objects;
@@ -26,17 +28,16 @@ public class CategoryServiceImpl  extends ServiceImpl<CategoryMapper,Category> i
     @Resource
     private GoodCategoryService goodCategoryService;
     @Override
-    public void saveCategory(Category category) {
-
-        if(Objects.nonNull(category.getPkId())){
-            Long count = lambdaQuery().eq(Category::getCategoryId, category.getPkId()).count();
+    public void saveCategory(CategoryDto categoryDto) {
+        if(Objects.nonNull(categoryDto.getPkId())){
+            Long count = lambdaQuery().eq(Category::getCategoryId, categoryDto.getPkId()).count();
             if(count<1)
                 throw new RuntimeException("pkId找不到对应的categoryId");
         }
-        Long count = userService.lambdaQuery().eq(User::getUserId, category.getCreateUser()).count();
-        if(count<1)
+        Long count1 = userService.lambdaQuery().eq(User::getUserId, categoryDto.getCreateUser()).count();
+        if(count1<1)
             throw new RuntimeException("createUser无效");
-        save(category);
+        save(MyBeanUtils.copyProperties(categoryDto,new Category()));
 
     }
 

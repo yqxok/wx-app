@@ -48,16 +48,16 @@ public class TestJDBC {
     private CategoryMapper categoryMapper;
     @Test//查询测试
     public void mybatisPlusSelect(){
-        List<User> user = userMapper.selectList(null);
-        List<GoodOrder> goodOrders = goodOrderMapper.selectList(null);
-        List<GoodComment> goodComments = goodCommentMapper.selectList(null);
-        List<Category> categories = goodCategoryMapper.selectList(null);
-        List<Good> goods = goodMapper.selectList(null);
+//        List<User> user = userMapper.selectList(null);
+//        List<GoodOrder> goodOrders = goodOrderMapper.selectList(null);
+//        List<GoodComment> goodComments = goodCommentMapper.selectList(null);
+//        List<GoodCategory> categories = goodCategoryMapper.selectList(null);
+//        List<Good> goods = goodMapper.selectList(null);
         List<Dormitory> dormitories = dormitoryMapper.selectList(null);
         List<Collect> collects = collectMapper.selectList(null);
         List<ChatContent> chatContents = chatContentMapper.selectList(null);
         List<Category> categories1 = categoryMapper.selectList(null);
-        log.warn("categories={}",goods);
+//        log.warn("categories={}",goods);
     }
     @Test//插入测试
     public void myBatisPlusInsert(){
@@ -66,7 +66,7 @@ public class TestJDBC {
         category1.setCategoryName("Elect");
         category1.setPkId(null);  // Assuming it's a top-level category
         category1.setCreateUser(1001L);
-        category1.setIsDeleted(false);
+        category1.setIsDeleted(1);
         int insert = categoryMapper.insert(category1);
     }
 }

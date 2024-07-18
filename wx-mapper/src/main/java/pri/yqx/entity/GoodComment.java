@@ -3,6 +3,7 @@ package pri.yqx.entity;
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import lombok.Data;
 
 import javax.validation.constraints.NotEmpty;
@@ -13,23 +14,28 @@ import java.time.LocalDateTime;
 
 public class GoodComment {
     @TableId
-    @NotNull
     private Long commentId;
-    @NotNull
+
     private Long goodId;
-    @NotNull
+
     private Long userId;
-    @NotEmpty
+
     private String userName;
-    @NotEmpty
+
     private String content;
     //父评论
     private Long fatherId;
+
+
+    private Long replyUserId;
+
+    private String replyName;
     @TableField(fill= FieldFill.INSERT)
     private LocalDateTime createTime;
-    @NotNull
-    private Long replyUserId;
-    @NotEmpty
-    private String replyName;
+    @TableField(fill=FieldFill.INSERT_UPDATE)
+    private LocalDateTime updateTime;
+    private Integer version;
+    @TableLogic
+    private Integer isDeleted;
 
 }

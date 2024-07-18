@@ -1,6 +1,13 @@
 spring:
   profiles:
     active: mapper
+  jackson:
+    #  格式化返回时间 yyyy-MM-dd HH:mm:ss
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+  servlet:
+    multipart:
+      max-file-size: 10MB
 #微信服务器密钥
 wechat:
   app-id: wxf5df1890a4748e65

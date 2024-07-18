@@ -1,4 +1,4 @@
-package pri.yqx.util;
+package pri.yqx.common;
 
 import com.alibaba.fastjson.JSON;
 import com.qiniu.common.QiniuException;
