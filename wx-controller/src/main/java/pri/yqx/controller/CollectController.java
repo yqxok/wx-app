@@ -25,6 +25,7 @@ public class CollectController {
     @GetMapping("/{userId}/{page}/{pageSize}")
     public Result<Page<Collect>> page(@PathVariable Long userId,@PathVariable int page,@PathVariable int pageSize){
         log.info("userId={},page={},pageSize={}",userId,page,pageSize);
+        collectService.checkExistOfUser(userId);
         Page<Collect> collectPage = new Page<>(page, pageSize);
         collectPage= collectService.lambdaQuery().eq(Collect::getUserId,userId).page(collectPage);
         return Result.success(collectPage,"收藏查询成功");

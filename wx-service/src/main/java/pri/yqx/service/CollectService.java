@@ -9,4 +9,6 @@ import pri.yqx.entity.Collect;
 
 public interface CollectService extends IService<Collect> {
     void saveCollect(Collect collect);
+
+    void checkExistOfUser(Long userId);
 }

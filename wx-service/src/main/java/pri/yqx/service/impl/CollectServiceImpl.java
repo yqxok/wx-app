@@ -8,13 +8,14 @@ import pri.yqx.entity.Category;
 import pri.yqx.entity.Collect;
 import pri.yqx.entity.Good;
 import pri.yqx.entity.User;
+import pri.yqx.enums.GlobalStatusCode;
+import pri.yqx.exception.GlobalServiceException;
 import pri.yqx.mapper.CategoryMapper;
 import pri.yqx.mapper.CollectMapper;
 import pri.yqx.service.CategoryService;
 import pri.yqx.service.CollectService;
 import pri.yqx.service.GoodService;
 import pri.yqx.service.UserService;
-
 import javax.annotation.Resource;
 
 @Service
@@ -33,5 +34,10 @@ public class CollectServiceImpl extends ServiceImpl<CollectMapper, Collect> impl
         if(count1<1)
             throw new RuntimeException("不存在该商品id");
         save(collect);
+    }
+
+    @Override
+    public void checkExistOfUser(Long userId) {
+        userService.lambdaQuery().eq(User::getUserId,userId).oneOpt().orElseThrow(()->new GlobalServiceException(GlobalStatusCode.USER_ACCOUNT_NOT_EXIST));
     }
 }
