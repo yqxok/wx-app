@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="pri.yqx.mapper.ChatContentMapper">
+    <resultMap id="jsonPicUrls" type="pri.yqx.vo.ChatContentCountVo">
+        <result property="picUrls"   column="pic_urls"
+                typeHandler="pri.yqx.json.PicUrlJsonHandler" />
+    </resultMap>
+    <select id="countUnRead" resultMap="jsonPicUrls">
+        <!-- 查询userId与所有其他用户的最新一条聊天记录以及未读聊天记录数   -->
+        select c1.content,c2.max_time createTime,c2.send_id theOtherId,c2.count noReadCount,ur.user_name theOtherName,ur.profile_pic_url theOtherProfileImg,g.pic_urls,g.good_id
+        from wx_chat_content c1
+        inner join (select case when ch.send_user_id=#{userId} then ch.receive_user_id else ch.send_user_id end as send_id,max(ch.create_time) max_time,count(case when ch.is_read=0 and ch.send_user_id!=#{userId} then 1 end) count,good_id
+        from wx_chat_content ch WHERE ch.is_deleted=0 and ch.receive_user_delete!=#{userId} and ch.send_user_delete!=#{userId} and (ch.send_user_id=#{userId} or ch.receive_user_id=#{userId})
+        group by case when ch.send_user_id=#{userId} then ch.receive_user_id else ch.send_user_id end ,ch.good_id)
+        c2 on case when c1.send_user_id=#{userId} then c1.receive_user_id else c1.send_user_id end =c2.send_id
+        inner join wx_user ur on ur.user_id=c2.send_id
+        inner join wx_good g on g.good_id=c2.good_id
+        where c1.create_time=c2.max_time order by c2.count desc, c2.max_time desc;
+    </select>
+    <select id="noReadCount" resultType="java.lang.Integer">
+        select count(*) from wx_chat_content ch where ch.receive_user_id=#{userId}  and ch.is_read=false and ch.is_deleted=0;
+    </select>
+    <select id="getChatContentList" resultType="pri.yqx.vo.ChatContentVo">
+        select * from wx_chat_content c where c.good_id=#{goodId} and c.is_deleted=false and c.receive_user_delete!=#{userId} and c.send_user_delete!=#{userId}
+        and ((c.send_user_id=#{userId} and c.receive_user_id=#{theOtherId}) or (c.receive_user_id=#{userId} and c.send_user_id=#{theOtherId}))
+        <if test="dateTime!=null">and c.create_time>#{dateTime}</if> order by c.create_time;
+    </select>
+    <!--     select c1.content,c2.max_time createTime,c2.send_id theOtherId,c2.count noReadCount,ur.user_name theOtherName,ur.profile_pic_url theOtherProfileImg,g.pic_urls,g.good_id
+            from wx_chat_content c1
+            inner join (select case when ch.send_user_id=#{userId} then ch.receive_user_id else ch.send_user_id end as send_id,max(ch.create_time) max_time,count(case when ch.is_read=0 and ch.send_user_id!=#{userId} then 1 end) count,good_id
+            from wx_chat_content ch WHERE (ch.send_user_id = #{userId} OR ch.receive_user_id = #{userId}) and ch.is_deleted=0 group by case when ch.send_user_id=#{userId} then ch.receive_user_id else ch.send_user_id end ,ch.good_id)
+            c2 on case when c1.send_user_id=#{userId} then c1.receive_user_id else c1.send_user_id end =c2.send_id
+            inner join wx_user ur on ur.user_id=c2.send_id
+            inner join wx_good g on g.good_id=c2.good_id
+            where c1.create_time=c2.max_time order by c2.count desc, c2.max_time desc;-->
+</mapper>

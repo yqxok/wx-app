@@ -1,24 +1,24 @@
 package pri.yqx.service.impl;
 
-import com.baomidou.mybatisplus.extension.service.IService;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pri.yqx.dto.CollectDto;
-import pri.yqx.entity.Category;
 import pri.yqx.entity.Collect;
 import pri.yqx.entity.Good;
 import pri.yqx.entity.User;
-import pri.yqx.mapper.CategoryMapper;
 import pri.yqx.mapper.CollectMapper;
-import pri.yqx.service.CategoryService;
 import pri.yqx.service.CollectService;
 import pri.yqx.service.GoodService;
 import pri.yqx.service.UserService;
 import pri.yqx.util.MyBeanUtils;
+import pri.yqx.vo.CollectNumVo;
 import pri.yqx.vo.CollectVo;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 @Service
 @Transactional
@@ -27,15 +27,54 @@ public class CollectServiceImpl extends ServiceImpl<CollectMapper, Collect> impl
     private UserService userService;
     @Resource
     private GoodService goodService;
+    @Resource
+    private CollectMapper collectMapper;
+
     @Override
-    public void saveCollect(CollectDto collectDto) {
-        Long count = userService.lambdaQuery().eq(User::getUserId, collectDto.getUserId()).count();
-        if(count<1)
-            throw new RuntimeException("不存在该用户");
-        Long count1 = goodService.lambdaQuery().eq(Good::getGoodId, collectDto.getGoodId()).count();
-        if(count1<1)
-            throw new RuntimeException("不存在该商品id");
+    public Boolean saveCollect(CollectDto collectDto) {
+
+        Long count = this.lambdaQuery().eq(Collect::getUserId, collectDto.getUserId())
+                .eq(Collect::getGoodId, collectDto.getGoodId())
+                .count();
+        if(count>0)
+            throw new RuntimeException("该用户已经收藏此商品");
+        this.goodService.lambdaUpdate().eq(Good::getGoodId,collectDto.getGoodId())
+                .setSql("collect_num=collect_num+1").update();
         Collect collect = MyBeanUtils.copyProperties(collectDto, new Collect());
         save(collect);
+        return true;
+    }
+
+    @Override
+    public Page<CollectVo> getCollectVoPage(Long userId, Integer page, Integer pageSize) {
+        int index=(page-1)*pageSize;
+        List<CollectVo> collectVo = collectMapper.getCollectVoList(userId, index, pageSize);
+        Page<CollectVo> collectVoPage = new Page<>(page, pageSize);
+        collectVoPage.setRecords(collectVo).setTotal(collectVo.size()).setCurrent(page);
+        return collectVoPage;
+    }
+
+    @Override
+    public CollectNumVo getCollectNum(Long userId, Long goodId) {
+        Good one = goodService.lambdaQuery().eq(Good::getGoodId, goodId).select(Good::getCollectNum).one();
+        Collect one1 = this.lambdaQuery().eq(Collect::getUserId, userId).eq(Collect::getGoodId, goodId).one();
+        CollectNumVo collectNumVo = new CollectNumVo().setGoodId(goodId).setUserId(userId).setCollectNum(one.getCollectNum());
+        collectNumVo.setIsCollected(one1 != null);
+        return collectNumVo;
+    }
+
+    @Override
+    public void validateCollectId(Long collectId) {
+        Long count = this.lambdaQuery().eq(Collect::getCollectId, collectId).count();
+        if(count<1)
+            throw new RuntimeException("该collectId无效");
+    }
+
+    @Override
+    public Boolean deleteCollect(List<Long> goodIds, Long userId) {
+        this.remove(new LambdaQueryWrapper<Collect>().eq(Collect::getUserId,userId).in(Collect::getGoodId,goodIds));
+        this.goodService.lambdaUpdate().in(Good::getGoodId,goodIds)
+                .setSql("collect_num=collect_num-1").update();
+        return false;
     }
 }

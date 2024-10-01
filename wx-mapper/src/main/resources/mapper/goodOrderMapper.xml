@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="pri.yqx.mapper.GoodOrderMapper">
+
+
+    <select id="getSimpleOrderVos" parameterType="pri.yqx.dto.SimpleOrderDto" resultType="pri.yqx.vo.SimpleOrderVo">
+        select o.order_id,o.number,o.total_price,o.status,o.good_id,o.html,o.pic_url,u.user_id,u.user_name,u.profile_pic_url
+        from wx_good_order o inner join wx_user u on <if test="isDeliverer==true">o.receiver_id=</if>
+        <if test="isDeliverer==false">o.deliverer_id=</if> u.user_id where <if test="isDeliverer==true">o.deliverer_id=</if>
+        <if test="isDeliverer==false">o.receiver_id=</if> #{userId}<if test="status!=null">and o.status=#{status} </if>
+        order by o.create_time desc limit #{page},#{pageSize};
+    </select>
+    <select id="getGoodByOrderId" resultType="pri.yqx.entity.Good">
+        select g.good_id,g.status,g.good_num from wx_good_order o inner join wx_good g on o.good_id=g.good_id where o.order_id=#{orderId};
+    </select>
+<!--    private Long goodId;-->
+<!--    //商品描述-->
+<!--    private String html;-->
+<!--    //商品图片数组,字段为json-->
+<!--    @TableField(typeHandler = PicUrlJsonHandler.class)-->
+<!--    private List<PicUrl> picUrls;-->
+<!--    private BigDecimal price;-->
+<!--    private Short status;-->
+<!--    private Integer browserTimes;-->
+<!--    private Integer goodNum;-->
+<!--    private Integer collectNum;-->
+<!--    //关联的用户id-->
+<!--    private Long userId;-->
+</mapper>

@@ -14,6 +14,7 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import pri.yqx.interceptor.GlobalInterceptor;
+import pri.yqx.interceptor.TokenInterceptor;
 
 import java.math.BigInteger;
 import java.nio.charset.Charset;
@@ -24,9 +25,14 @@ import java.util.List;
 
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
+    public static String[] ALLOW_Path;
+    static {
+        ALLOW_Path= new String[]{"/user/no/**", "/download/**","/good/no/**","/goodComment/no/**","/category/no/**"};
+    }
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new GlobalInterceptor()).addPathPatterns("/**");
+        registry.addInterceptor(new TokenInterceptor()).addPathPatterns("/**").excludePathPatterns(ALLOW_Path);
     }
     //配置fastjson
     @Override

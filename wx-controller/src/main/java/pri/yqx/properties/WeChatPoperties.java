@@ -11,4 +11,5 @@ public class WeChatPoperties {
     private String appId;
     private String appSecret;
     private String loginUrl;
+    private String phoneNumberUrl;
 }

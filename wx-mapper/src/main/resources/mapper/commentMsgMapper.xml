@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="pri.yqx.mapper.CommentMsgMapper">
+
+
+    <select id="getCommentMsgVo" resultType="pri.yqx.vo.CommentMsgVo">
+        select cm.is_read,cm.cm_msg_id,cm.comment_id,cm.good_id,cm.sender_id,cm.receiver_id,
+               cm.create_time,cm.content, u.profile_pic_url,u.user_name,g.pic_urls picUrl,u.user_id,cm.type
+        from (select * from wx_comment_msg c where c.cm_msg_id=#{cmMsgId}) cm
+        inner join wx_good g on cm.good_id=g.good_id inner join wx_user u on cm.sender_id=u.user_id
+    </select>
+    <select id="getCmMsgCountVo" resultType="pri.yqx.vo.CmMsgCountVo">
+        select a1.create_time,u.user_name,a2.noReadCount,a1.type from
+        (select * from  wx_comment_msg cm where cm.receiver_id=#{userId} order by cm.create_time DESC limit 1) a1
+        inner join wx_user u on a1.sender_id=u.user_id
+        inner join (select count(case when cm.is_read=false then 0 end) noReadCount, cm.receiver_id
+        from wx_comment_msg cm group by cm.receiver_id having cm.receiver_id=#{userId}) a2 on a1.receiver_id=a2.receiver_id;
+    </select>
+    <select id="getCommentMsgVoList" resultType="pri.yqx.vo.CommentMsgVo">
+        select cm.is_read, cm.cm_msg_id,cm.comment_id,cm.good_id,cm.sender_id,cm.receiver_id,
+               cm.create_time,cm.content, u.profile_pic_url,u.user_name,g.pic_urls picUrl,u.user_id,cm.type
+        from (select * from wx_comment_msg cm where cm.receiver_id=#{userId} order by cm.create_time DESC limit #{index},#{pageSize} ) cm
+        inner join wx_good g on cm.good_id=g.good_id inner join wx_user u on cm.sender_id=u.user_id
+    </select>
+
+<!--    private Long commentId;-->
+<!--    private Long goodId;-->
+<!--    private String picUrl;-->
+<!--    private Long userId;-->
+<!--    private String profilePicUrl;-->
+<!--    private String userName;-->
+<!--    private LocalDateTime createTime;-->
+<!--    private String content;-->
+<!--    private LocalDateTime createTime;-->
+</mapper>

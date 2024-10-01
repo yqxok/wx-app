@@ -14,7 +14,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 @Data
 @Accessors(chain = true)
-
 public class User {
     @TableId
     private Long userId;
@@ -27,6 +26,7 @@ public class User {
     private String phoneNumber;
 
     private LocalDate birthday;
+
     private Gender gender;
     //个人简介
     private String bio;
@@ -34,6 +34,7 @@ public class User {
     private String profilePicUrl;
 
     private LocalDateTime lastLogin;
+    private Integer noReadNum;
     //用户类型，枚举值
     private AccountType accountType;
     @TableField(fill= FieldFill.INSERT)

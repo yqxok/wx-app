@@ -8,13 +8,12 @@ import java.time.LocalDateTime;
 
 @Data
 public class Category {
-    @TableId
-    private Long categoryId;
 
+    @TableId(type = IdType.NONE)
     private String categoryName;
     //自关联的id,可以为空
-    private Long pkId;
-
+    private String pkId;
+    private Integer level;
     private Long createUser;
 
     @TableField(fill= FieldFill.INSERT)

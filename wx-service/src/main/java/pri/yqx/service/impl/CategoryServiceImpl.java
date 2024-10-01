@@ -1,19 +1,15 @@
 package pri.yqx.service.impl;
 
-import com.baomidou.mybatisplus.extension.service.IService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import jdk.internal.dynalink.support.Guards;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pri.yqx.dto.CategoryDto;
 import pri.yqx.entity.Category;
-import pri.yqx.entity.Good;
 import pri.yqx.entity.GoodCategory;
 import pri.yqx.entity.User;
 import pri.yqx.mapper.CategoryMapper;
 import pri.yqx.service.CategoryService;
 import pri.yqx.service.GoodCategoryService;
-import pri.yqx.service.GoodService;
 import pri.yqx.service.UserService;
 import pri.yqx.util.MyBeanUtils;
 
@@ -30,9 +26,9 @@ public class CategoryServiceImpl  extends ServiceImpl<CategoryMapper,Category> i
     @Override
     public void saveCategory(CategoryDto categoryDto) {
         if(Objects.nonNull(categoryDto.getPkId())){
-            Long count = lambdaQuery().eq(Category::getCategoryId, categoryDto.getPkId()).count();
+            Long count = lambdaQuery().eq(Category::getCategoryName, categoryDto.getPkId()).count();
             if(count<1)
-                throw new RuntimeException("pkId找不到对应的categoryId");
+                throw new RuntimeException("pkId找不到对应的category");
         }
         Long count1 = userService.lambdaQuery().eq(User::getUserId, categoryDto.getCreateUser()).count();
         if(count1<1)
@@ -42,17 +38,24 @@ public class CategoryServiceImpl  extends ServiceImpl<CategoryMapper,Category> i
     }
 
     @Override
-    public void deleteById(Long id) {
-        //是否存在该id
-        if(Objects.isNull(getById(id)))
-            throw new RuntimeException("不存在该categoryId");
-        Long count = goodCategoryService.lambdaQuery().eq(GoodCategory::getCategoryId, id).count();
+    public void validateCategory(String categoryName) {
+        Long count = this.lambdaQuery().eq(Category::getCategoryName, categoryName).count();
         if(count<1)
-            throw new RuntimeException("该categoryId已被其他表关联,不能删除");
-        Long count1 = lambdaQuery().eq(Category::getPkId, id).count();
-        if(count1>0)
-            throw new RuntimeException("该categoryId已被自关联,不能删除");
+            throw new RuntimeException("该分类不存在");
+    }
 
-        removeById(id);
+    @Override
+    public void deleteById(String categoryName) {
+        //是否存在该分类
+        if(Objects.isNull(getById(categoryName)))
+            throw new RuntimeException("不存在该category");
+        Long count = goodCategoryService.lambdaQuery().eq(GoodCategory::getCategoryName, categoryName).count();
+        if(count<1)
+            throw new RuntimeException("该category已被其他表关联,不能删除");
+        Long count1 = lambdaQuery().eq(Category::getPkId, categoryName).count();
+        if(count1>0)
+            throw new RuntimeException("该category已被自关联,不能删除");
+
+        removeById(categoryName);
     }
 }

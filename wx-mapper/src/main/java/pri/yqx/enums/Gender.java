@@ -1,15 +1,17 @@
 package pri.yqx.enums;
 
 import com.baomidou.mybatisplus.annotation.IEnum;
+import lombok.Getter;
 
-public enum Gender implements IEnum<String> {
-    MALE("MALE"),FEMALE("FEMALE");
-    private String gender;
-    Gender(String gender){
+@Getter
+public enum Gender implements IEnum<Short> {
+    MALE((short)1),FEMALE((short)0);
+    private Short gender;
+    Gender(Short gender){
         this.gender=gender;
     }
     @Override
-    public String getValue() {
+    public Short getValue() {
         return this.gender;
     }
 }

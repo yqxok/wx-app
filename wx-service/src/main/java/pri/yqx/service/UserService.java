@@ -1,10 +1,16 @@
 package pri.yqx.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import org.springframework.stereotype.Service;
+import pri.yqx.dto.LoginDto;
 import pri.yqx.entity.User;
+import pri.yqx.vo.UserVo;
 
 
 public interface UserService extends IService<User>  {
-    User login(String openId,String sessionId);
+    UserVo login(String openId, String sessionId);
+
+    public UserVo loginWithPhone(LoginDto loginDto);
+
+    public void signIn(LoginDto loginDto);
+    public void validateUserId(Long userId);
 }

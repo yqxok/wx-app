@@ -20,7 +20,6 @@ public class GoodComment {
 
     private Long userId;
 
-    private String userName;
 
     private String content;
     //父评论
@@ -29,7 +28,6 @@ public class GoodComment {
 
     private Long replyUserId;
 
-    private String replyName;
     @TableField(fill= FieldFill.INSERT)
     private LocalDateTime createTime;
     @TableField(fill=FieldFill.INSERT_UPDATE)

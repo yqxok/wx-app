@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="pri.yqx.mapper.GoodCommentMapper">
+
+
+
+    <select id="getGoodCommentVoList" resultType="pri.yqx.vo.GoodCommentVo">
+        select gc.comment_id,gc.user_id,u1.profile_pic_url,u1.user_name,gc.content,gc.good_job_num,
+               gc.father_id,gc.reply_user_id,u2.user_name as replyName,gc.create_time,
+               case when gj.user_id is null then false else true end as isGoodJob
+        from (select * from wx_good_comment cm where cm.good_id=#{goodId}) gc left join
+             wx_good g on gc.good_id=g.good_id left join wx_user u1 on gc.user_id=u1.user_id
+            left join wx_user u2 on gc.reply_user_id=u2.user_id left join
+            (select * from wx_good_job j where j.user_id=#{userId}) gj on gc.comment_id=gj.comment_id
+            order by gc.good_job_num DESC,gc.create_time DESC;
+    </select>
+    <select id="getGoodCommentVo" resultType="pri.yqx.vo.GoodCommentVo">
+        select gc.comment_id,gc.user_id,u1.profile_pic_url,u1.user_name,gc.content,gc.good_job_num,
+               gc.father_id,gc.reply_user_id,u2.user_name as replyName,gc.create_time,
+               case when gj.user_id is null then false else true end as isGoodJob
+        from (select * from wx_good_comment cm where cm.comment_id=#{commentId}) gc left join
+             wx_good g on gc.good_id=g.good_id left join wx_user u1 on gc.user_id=u1.user_id
+                                                                              left join wx_user u2 on gc.reply_user_id=u2.user_id left join
+                 (select * from wx_good_job j where j.user_id=#{userId}) gj on gc.comment_id=gj.comment_id
+    </select>
+    <!--    select gc.comment_id,gc.user_id,u1.profile_pic_url,u1.user_name,gc.content,gc.good_job_num,-->
+<!--    gc.father_id,gc.reply_user_id,u2.user_name as replyName,gc.create_time,-->
+<!--    case when gj.user_id is null then false else true end as isGoodJob-->
+<!--    from (select * from wx_good_comment cm where cm.good_id=#{goodId}) gc left join-->
+<!--    wx_good g on gc.good_id=g.good_id left join wx_user u1 on gc.user_id=u1.user_id-->
+<!--    left join wx_user u2 on gc.reply_user_id=u2.user_id left join-->
+<!--    (select * from wx_good_job j where j.user_id=#{userId}) gj on gc.comment_id=gj.comment_id-->
+
+</mapper>

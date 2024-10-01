@@ -1,4 +1,6 @@
 spring:
+  main:
+    allow-circular-references: true
   profiles:
     active: mapper
   jackson:
@@ -7,12 +9,14 @@ spring:
     time-zone: GMT+8
   servlet:
     multipart:
-      max-file-size: 10MB
+      max-file-size: 100MB
+      max-request-size: 100MB
 #微信服务器密钥
 wechat:
   app-id: wxf5df1890a4748e65
   app-secret: 8ba41e7df23ca7733151a6b42af3880f
-  login_url: https://api.weixin.qq.com/sns/jscode2session?appid=%s&secret=%s&js_code=%s&grant_type=authorization_code
+  login-url: https://api.weixin.qq.com/sns/jscode2session?appid=%s&secret=%s&js_code=%s&grant_type=authorization_code
+  phone-number-url: https://api.weixin.qq.com/wxa/business/getuserphonenumber
 oss:
   access-key: J0t_zI1a1lRNJ9OLmnwYoEs5NJzpREwRePkP7b2U
   secret-key: dcAT3Uizve0DzKY7VOo4Nq8RIXMqLnX8ZDFaa5P0

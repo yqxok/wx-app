@@ -1,7 +1,9 @@
 package pri.yqx.enums;
 
 import com.baomidou.mybatisplus.annotation.IEnum;
+import lombok.Getter;
 
+@Getter
 public enum AccountType implements IEnum<String> {
     REGULAR("REGULAR"),SELLER("SELLER"),ADMIN("ADMIN");
     final private String sort;

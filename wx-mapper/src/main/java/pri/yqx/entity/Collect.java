@@ -25,7 +25,7 @@ public class Collect {
     @TableField(fill=FieldFill.INSERT_UPDATE)
     private LocalDateTime updateTime;
     private Integer version;
-    @TableLogic
+
     private Integer isDeleted;
 }
 
