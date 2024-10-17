@@ -3,12 +3,13 @@ package pri.yqx.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pri.yqx.dto.CollectDto;
 import pri.yqx.entity.Collect;
 import pri.yqx.entity.Good;
-import pri.yqx.entity.User;
+import pri.yqx.exceptions.BusinessException;
 import pri.yqx.mapper.CollectMapper;
 import pri.yqx.service.CollectService;
 import pri.yqx.service.GoodService;
@@ -22,6 +23,7 @@ import java.util.List;
 
 @Service
 @Transactional
+@Slf4j
 public class CollectServiceImpl extends ServiceImpl<CollectMapper, Collect> implements CollectService {
     @Resource
     private UserService userService;
@@ -32,7 +34,8 @@ public class CollectServiceImpl extends ServiceImpl<CollectMapper, Collect> impl
 
     @Override
     public Boolean saveCollect(CollectDto collectDto) {
-
+        userService.validateUserId(collectDto.getUserId());
+        goodService.validateGoodId(collectDto.getGoodId());
         Long count = this.lambdaQuery().eq(Collect::getUserId, collectDto.getUserId())
                 .eq(Collect::getGoodId, collectDto.getGoodId())
                 .count();
@@ -56,6 +59,7 @@ public class CollectServiceImpl extends ServiceImpl<CollectMapper, Collect> impl
 
     @Override
     public CollectNumVo getCollectNum(Long userId, Long goodId) {
+
         Good one = goodService.lambdaQuery().eq(Good::getGoodId, goodId).select(Good::getCollectNum).one();
         Collect one1 = this.lambdaQuery().eq(Collect::getUserId, userId).eq(Collect::getGoodId, goodId).one();
         CollectNumVo collectNumVo = new CollectNumVo().setGoodId(goodId).setUserId(userId).setCollectNum(one.getCollectNum());
@@ -67,7 +71,7 @@ public class CollectServiceImpl extends ServiceImpl<CollectMapper, Collect> impl
     public void validateCollectId(Long collectId) {
         Long count = this.lambdaQuery().eq(Collect::getCollectId, collectId).count();
         if(count<1)
-            throw new RuntimeException("该collectId无效");
+            throw new BusinessException("该collectId无效");
     }
 
     @Override
@@ -75,6 +79,6 @@ public class CollectServiceImpl extends ServiceImpl<CollectMapper, Collect> impl
         this.remove(new LambdaQueryWrapper<Collect>().eq(Collect::getUserId,userId).in(Collect::getGoodId,goodIds));
         this.goodService.lambdaUpdate().in(Good::getGoodId,goodIds)
                 .setSql("collect_num=collect_num-1").update();
-        return false;
+        return true;
     }
 }

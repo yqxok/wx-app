@@ -39,8 +39,8 @@ public class OrderCreateListner implements EventListner {
             GenericWsDto genericWsDto = new GenericWsDto("/order",orderMsgVo);
             session.getBasicRemote().sendText(JSON.toJSONString(genericWsDto));
         } catch (IOException e) {
-            log.warn("订单序列化错误");
-            throw new RuntimeException(e);
+            log.warn("OrderCreateListner序列化错误");
+
         }
     }
 }

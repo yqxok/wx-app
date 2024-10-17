@@ -1,20 +1,13 @@
 package pri.yqx.controller;
 
-import com.baomidou.mybatisplus.core.toolkit.IdWorker;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.web.bind.annotation.*;
 import pri.yqx.common.Result;
 import pri.yqx.dto.GoodCommentDto;
-import pri.yqx.entity.GoodComment;
 import pri.yqx.service.GoodCommentService;
-import pri.yqx.util.MyBeanUtils;
 import pri.yqx.vo.GoodCommentVo;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 
 @RestController

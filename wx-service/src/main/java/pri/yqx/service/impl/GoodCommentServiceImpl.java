@@ -1,19 +1,14 @@
 package pri.yqx.service.impl;
 
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
-import com.baomidou.mybatisplus.extension.service.IService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pri.yqx.dto.GoodCommentDto;
-import pri.yqx.entity.Category;
 import pri.yqx.entity.GoodComment;
-import pri.yqx.event.EventPublisher;
-import pri.yqx.mapper.CategoryMapper;
+import pri.yqx.exceptions.BusinessException;
 import pri.yqx.mapper.GoodCommentMapper;
-import pri.yqx.service.CategoryService;
 import pri.yqx.service.GoodCommentService;
 import pri.yqx.service.GoodService;
 import pri.yqx.service.UserService;
@@ -21,8 +16,6 @@ import pri.yqx.util.MyBeanUtils;
 import pri.yqx.vo.GoodCommentVo;
 
 import javax.annotation.Resource;
-import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -60,7 +53,7 @@ public class GoodCommentServiceImpl extends ServiceImpl<GoodCommentMapper, GoodC
         });
         ArrayList<GoodCommentVo> goodCommentVos = new ArrayList<>(noFatherMap.values());
         goodCommentVos.sort((i,j)->
-            i.getTrueCreateTime().isBefore(j.getTrueCreateTime())?1:-1
+                i.getTrueCreateTime().isBefore(j.getTrueCreateTime())?1:-1
         );
         return goodCommentVos;
     }
@@ -69,7 +62,7 @@ public class GoodCommentServiceImpl extends ServiceImpl<GoodCommentMapper, GoodC
     public void validateCommentId(Long commentId) {
         Long count = this.lambdaQuery().eq(GoodComment::getCommentId, commentId).count();
         if(count<1)
-            throw new RuntimeException("该commentId无效");
+            throw new BusinessException("该commentId无效");
     }
 
     @Override
@@ -80,7 +73,6 @@ public class GoodCommentServiceImpl extends ServiceImpl<GoodCommentMapper, GoodC
         long commentId = IdWorker.getId();
         goodComment.setCommentId(commentId);
         this.save(goodComment);
-
         return goodCommentMapper.getGoodCommentVo(commentId);
     }
 }

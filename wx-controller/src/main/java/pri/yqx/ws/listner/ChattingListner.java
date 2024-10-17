@@ -45,7 +45,7 @@ public class ChattingListner implements EventListner {
             if(receiveSession!=null)
                 receiveSession.getBasicRemote().sendText(msg);
         } catch (IOException e) {
-            log.warn("{}",e.getStackTrace());
+            log.warn("ChattingListner序列化错误");
         }
     }
 }

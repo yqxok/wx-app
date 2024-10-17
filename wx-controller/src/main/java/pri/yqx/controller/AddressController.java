@@ -1,9 +1,11 @@
 package pri.yqx.controller;
 
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import pri.yqx.common.Result;
 import pri.yqx.dto.AddressDto;
-import pri.yqx.entity.Address;
+import pri.yqx.groups.Insert;
+import pri.yqx.groups.Update;
 import pri.yqx.service.AddressService;
 import pri.yqx.vo.AddressVo;
 
@@ -25,23 +27,20 @@ public class AddressController {
     public Result<AddressVo> getDefaultAddress(@PathVariable Long userId){
         AddressVo defaultAddress = addressService.getDefaultAddress(userId);
         return Result.success(defaultAddress,"默认地址查询成功");
-//        Address one = addressService.lambdaQuery().eq(Address::getUserId, userId).eq(Address::getIsDefault, true).one();
-
     }
-    @PostMapping("/{userId}")
-    public Result<String> saveAddress(@RequestBody AddressDto addressDto,@PathVariable Long userId){
-        addressService.saveAddress(addressDto,userId);
+    @PostMapping
+    public Result<String> saveAddress(@Validated(Insert.class) @RequestBody AddressDto addressDto){
+        addressService.saveAddress(addressDto);
         return Result.success(null,"地址保存成功");
     }
-    @PutMapping("/{addressId}")
-    public Result<String> updateAddress(@RequestBody AddressDto addressDto,@PathVariable Long addressId){
-        addressService.updateAddress(addressDto,addressId);
+    @PutMapping
+    public Result<String> updateAddress(@Validated(Update.class) @RequestBody AddressDto addressDto){
+        addressService.updateAddress(addressDto);
         return Result.success(null,"地址修改成功");
     }
-    @PutMapping("/{userId}/{addressId}")
-    public Result<String> updateDefaultAddress(@PathVariable Long userId,@PathVariable Long addressId){
-        addressService.updateDefaultAddress(userId,addressId);
-
+    @PutMapping("/default")
+    public Result<String> updateDefaultAddress(@Validated(Update.class) @RequestBody AddressDto addressDto){
+        addressService.updateDefaultAddress(addressDto);
         return Result.success(null,"默认地址更新成功");
     }
     @DeleteMapping("/{addressId}")

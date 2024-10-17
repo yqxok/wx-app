@@ -14,6 +14,7 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import pri.yqx.interceptor.GlobalInterceptor;
+import pri.yqx.interceptor.TimeCountInterceptor;
 import pri.yqx.interceptor.TokenInterceptor;
 
 import java.math.BigInteger;
@@ -33,6 +34,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new GlobalInterceptor()).addPathPatterns("/**");
         registry.addInterceptor(new TokenInterceptor()).addPathPatterns("/**").excludePathPatterns(ALLOW_Path);
+        registry.addInterceptor(new TimeCountInterceptor()).addPathPatterns("/**");
     }
     //配置fastjson
     @Override

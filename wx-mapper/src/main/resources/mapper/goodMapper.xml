@@ -13,12 +13,16 @@
     </resultMap>
     <!--public Account getAcct(Long id);-->
     <select id="selectGoodVo" resultMap="goodVo">
-        select g.good_id,g.html,g.pic_urls,g.price,u.user_id,u.user_name,u.profile_pic_url
-        from wx_good g left join wx_user u on g.user_id=u.user_id
-        <if test="categoryName!=null">left join wx_good_category ca on g.good_id=ca.good_id</if>
-        where g.is_deleted!=1 and g.status=0
-        <if test="categoryName!=null">and ca.category_name=#{categoryName} </if>
-        limit #{index},#{size}
+        <if test="categoryName==null">
+            select g.good_id,g.html,g.pic_urls,g.price,u.user_id,u.user_name,u.profile_pic_url
+            from (select * from wx_good g where g.is_deleted=0 and g.status=0 limit #{index},#{size} ) g
+            left join wx_user u on g.user_id=u.user_id;
+        </if>
+        <if test="categoryName!=null">
+            select g.good_id,g.html,g.pic_urls,g.price,u.user_id,u.user_name,u.profile_pic_url
+            from (select ca.good_id from wx_good_category ca where ca.is_deleted=0 and ca.category_name=#{categoryName} limit #{index},#{size}) ca
+            left join wx_good g on ca.good_id=g.good_id left join wx_user u on g.user_id=u.user_id;
+        </if>
     </select>
     <select id="getGoodDetailVo" resultMap="goodDetailVo">
         select g.good_id,g.html,g.pic_urls,g.price,u.user_id,u.user_name,u.profile_pic_url,g.status,g.good_num,g.collect_num
@@ -29,6 +33,27 @@
         from wx_good g left join wx_user u on g.user_id=u.user_id where g.is_deleted!=1
         <if test="status!=null">and g.status=#{status}</if>and g.user_id=#{userId} order by g.create_time DESC;
     </select>
+    <select id="selectGoodId" resultType="java.lang.Long">
+        <if test="categoryName==null">
+            select g.good_id from wx_good g where g.is_deleted=0 and g.status=0 limit #{index},#{size}
+        </if>
+        <if test="categoryName!=null">
+           select ca.good_id from wx_good_category ca where ca.is_deleted=0 and ca.category_name=#{categoryName} limit #{index},#{size};
+        </if>
+    </select>
+    <select id="getGoodVos" resultMap="goodVo">
+        select g.good_id,g.html,g.pic_urls,g.price,u.user_id,u.user_name,u.profile_pic_url
+        from (select * from wx_good g where g.good_id in
+        <foreach collection="noHitIds" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>) g left join wx_user u on g.user_id=u.user_id
+    </select>
 
 </mapper>
 
+<!--        select g.good_id,g.html,g.pic_urls,g.price,u.user_id,u.user_name,u.profile_pic_url-->
+<!--        from wx_good g left join wx_user u on g.user_id=u.user_id-->
+<!--<if test="categoryName!=null">left join wx_good_category ca on g.good_id=ca.good_id</if>-->
+<!--        where g.is_deleted!=1 and g.status=0-->
+<!--<if test="categoryName!=null">and ca.category_name=#{categoryName} </if>-->
+<!--        limit #{index},#{size}-->

@@ -1,23 +1,16 @@
 package pri.yqx.test;
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.redis.core.RedisTemplate;
 import pri.yqx.entity.Dormitory;
 import pri.yqx.entity.Good;
-import pri.yqx.entity.GoodOrder;
-import pri.yqx.entity.User;
-import pri.yqx.service.DormitoryService;
-import pri.yqx.service.GoodOrderService;
-import pri.yqx.service.GoodService;
-import pri.yqx.service.UserService;
-import pri.yqx.vo.GoodVo;
+import pri.yqx.json.PicUrl;
+import pri.yqx.service.*;
 
 import javax.annotation.Resource;
-import java.math.BigDecimal;
 import java.util.List;
 
 
@@ -37,16 +30,44 @@ public class ServiceTest {
     }
     @Resource
     private GoodOrderService goodOrderService;
+
     @Test
     public void testUpdate(){
-        this.goodOrderService.lambdaUpdate().eq(GoodOrder::getOrderId,1837822038640922625L)
-                .set(GoodOrder::getStatus,1).update();
+//        goodService.lambdaUpdate().set(Good::getStatus,0).update();
+        List<Good> list = goodService.lambdaQuery() .select(Good::getGoodId,Good::getPicUrls).list();
+
+        list.forEach(item->{
+            List<PicUrl> picUrls = item.getPicUrls();
+            picUrls.forEach(i->{
+                String url = i.getUrl();
+                i.setUrl(url.replace("sge9cddv1.hn-bkt.clouddn.com/api/download","sge9cddv1.hn-bkt.clouddn.com"));
+            });
+            boolean b = goodService.updateById(item);
+
+        });
 
     }
     @Test
     public void testSelect(){
+
         List<Dormitory> list = dormitoryService.lambdaQuery().groupBy(Dormitory::getSchool).select(Dormitory::getSchool).list();
     }
+    @Resource
+    private GoodCommentService goodCommentService;
+    @Test
+    public void testCommentService(){
+        goodCommentService.validateCommentId(1836046195828654081L);
+    }
 
+    @Autowired
+    private RedisTemplate redisTemplate;
+    @Test
+    public void testRedis(){
+//        stringRedisTemplate.opsForValue().multiGet()
+//        Good good = redisUtil.get("商品id:124234", Good.class);
+        Good good = new Good().setGoodId(3452432L).setGoodNum(11).setHtml("房间都十分建瓯市的");
+        redisTemplate.opsForValue().set(1213L, good);
+        Object id = redisTemplate.opsForValue().get(1213L);
+    }
 
 }

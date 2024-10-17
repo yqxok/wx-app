@@ -11,11 +11,11 @@ public interface AddressService extends IService<Address> {
     public void validateAddressId(Long addressId);
     public List<AddressVo> getAddressVoList(Long userId);
 
-    void saveAddress(AddressDto addressDto,Long userId);
+    void saveAddress(AddressDto addressDto);
 
-    void updateAddress(AddressDto addressDto,Long addressId);
+    void updateAddress(AddressDto addressDto);
 
-    void updateDefaultAddress(Long userId, Long addressId);
+    void updateDefaultAddress(AddressDto addressDto);
 
     AddressVo getDefaultAddress(Long userId);
 }

@@ -3,6 +3,7 @@
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/wx-common/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/wx-controller/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/wx-mapper/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/wx-service/src/main/java" charset="UTF-8" />

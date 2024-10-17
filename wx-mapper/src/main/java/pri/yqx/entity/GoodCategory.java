@@ -28,6 +28,6 @@ public class GoodCategory {
     @TableField(fill=FieldFill.INSERT_UPDATE)
     private LocalDateTime updateTime;
     private Integer version;
-//    @TableLogic
+    @TableLogic
     private Integer isDeleted;
 }

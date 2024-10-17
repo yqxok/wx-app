@@ -14,8 +14,8 @@ public interface GoodService extends IService<Good> {
     public Long saveGood(GoodDto goodDto);
     public Page<GoodVo> pageGoodVo(int page,int pageSize,String categoryName);
     public List<GoodVo> listGoodVoById(Long userId,Short status);
-    public void deleteGoodById(Long goodId,String prefix);
+    public void deleteGoodById(Long goodId,String token);
     public GoodDetailVo getGoodDetailVo(Long goodId);
-    public GoodDetailVo updateGood(GoodDto goodDto);
+    public Long updateGood(GoodDto goodDto);
 
 }

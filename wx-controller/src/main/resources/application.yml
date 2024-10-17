@@ -2,7 +2,7 @@ spring:
   main:
     allow-circular-references: true
   profiles:
-    active: mapper
+    active: [dev,mapper,service]
   jackson:
     #  格式化返回时间 yyyy-MM-dd HH:mm:ss
     date-format: yyyy-MM-dd HH:mm:ss

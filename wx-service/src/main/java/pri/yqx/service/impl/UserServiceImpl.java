@@ -1,25 +1,28 @@
 package pri.yqx.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pri.yqx.dto.LoginDto;
 import pri.yqx.entity.User;
+import pri.yqx.exceptions.BusinessException;
 import pri.yqx.mapper.UserMapper;
 import pri.yqx.service.UserService;
 import pri.yqx.util.MyBeanUtils;
 import pri.yqx.vo.UserVo;
 
+
 import java.util.Random;
-import java.util.UUID;
+
 
 @Service
 @Transactional
+@Slf4j
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
     @Override
     public UserVo login(String openId, String sessionKey) {
         User one = lambdaQuery().eq(User::getOpenId, openId).one();
-
         if(one!=null){
             return MyBeanUtils.copyProperties(one, new UserVo());
         }
@@ -36,6 +39,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
                 .eq(User::getPassword, loginDto.getPassword()).one();
         if(one==null)
             throw new RuntimeException("账号或密码错误");
+
         return MyBeanUtils.copyProperties(one,new UserVo());
     }
 
@@ -54,6 +58,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     public void validateUserId(Long userId) {
         Long count = this.lambdaQuery().eq(User::getUserId, userId).count();
         if(count<1)
-            throw new RuntimeException("该userId无效");
+            throw new BusinessException("该userId无效");
     }
 }

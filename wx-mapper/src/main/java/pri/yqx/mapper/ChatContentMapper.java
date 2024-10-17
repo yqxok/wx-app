@@ -14,5 +14,5 @@ public interface ChatContentMapper extends BaseMapper<ChatContent> {
     //查询userId与所有其他用户的最新一条聊天记录以及未读聊天记录数
     public List<ChatContentCountVo> countUnRead(Long userId);
     public List<ChatContentVo> getChatContentList(Long theOtherId,Long userId, Long goodId, LocalDateTime dateTime);
-    public Integer noReadCount(Long userId);
+//    public Integer noReadCount(Long userId);
 }

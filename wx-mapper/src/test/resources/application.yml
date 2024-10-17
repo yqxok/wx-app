@@ -1,8 +1,8 @@
 spring:
   datasource:
-    username: root
-    url: jdbc:mysql://localhost:3306/weiapp
-    password: 123456
+    username: yqx
+    url: jdbc:mysql://110.41.32.97:3306/weiapp
+    password: 1932829174a
     driver-class-name: com.mysql.cj.jdbc.Driver
 mybatis-plus:
 

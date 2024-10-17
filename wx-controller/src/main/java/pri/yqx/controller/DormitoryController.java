@@ -6,8 +6,6 @@ import org.springframework.web.bind.annotation.RestController;
 import pri.yqx.common.Result;
 import pri.yqx.entity.Dormitory;
 import pri.yqx.service.DormitoryService;
-import pri.yqx.util.MyBeanUtils;
-import pri.yqx.vo.DormitoryVo;
 
 import javax.annotation.Resource;
 import java.util.List;

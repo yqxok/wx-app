@@ -36,6 +36,6 @@ public class GoodOrder {
     private LocalDateTime createTime;
     private LocalDateTime dealTime;
     private Integer version;
-    @TableLogic
-    private Integer isDeleted;
+    private Boolean delivererDeleted;
+    private Boolean receiverDeleted;
 }

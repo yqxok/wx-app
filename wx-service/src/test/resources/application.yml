@@ -1,8 +1,15 @@
 spring:
+  redis:
+    host: 110.41.32.97
+    port: 6379
+    password: 1932829174a
+    database: 0
+  main:
+    allow-circular-references: true
   datasource:
-    username: root
-    url: jdbc:mysql://localhost:3306/weiapp
-    password: 123456
+    username: yqx
+    url: jdbc:mysql://110.41.32.97:3306/weiapp
+    password: 1932829174a
     driver-class-name: com.mysql.cj.jdbc.Driver
 mybatis-plus:
 
@@ -12,3 +19,4 @@ mybatis-plus:
   global-config:
     db-config:
       table-prefix: wx_
+

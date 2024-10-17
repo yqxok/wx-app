@@ -13,6 +13,7 @@ import pri.yqx.json.PicUrl;
 import pri.yqx.mapper.CommentMsgMapper;
 import pri.yqx.service.CommentMsgService;
 import pri.yqx.service.GoodCommentService;
+import pri.yqx.service.GoodService;
 import pri.yqx.service.UserService;
 import pri.yqx.util.MyBeanUtils;
 import pri.yqx.vo.CmMsgCountVo;
@@ -31,10 +32,14 @@ public class CommentMsgServiceImpl extends ServiceImpl<CommentMsgMapper, Comment
     private GoodCommentService goodCommentService;
     @Resource
     private CommentMsgMapper commentMsgMapper;
+
+    @Resource
+    private GoodService goodService;
     @Override
     public CommentMsgVo saveCommentMsg(CommentMsgDto commentMsgDto) {
         if(Objects.equals(commentMsgDto.getReceiverId(), commentMsgDto.getSenderId()))
             throw new RuntimeException("receiverId与senderId相等");
+        goodService.validateGoodId(commentMsgDto.getGoodId());
         goodCommentService.validateCommentId(commentMsgDto.getCommentId());
         userService.validateUserId(commentMsgDto.getSenderId());
         userService.validateUserId(commentMsgDto.getReceiverId());
@@ -48,7 +53,6 @@ public class CommentMsgServiceImpl extends ServiceImpl<CommentMsgMapper, Comment
         String picUrl = commentMsgVo.getPicUrl();
         List<PicUrl> picUrls = JSON.parseArray(picUrl, PicUrl.class);
         commentMsgVo.setPicUrl(picUrls.get(0).getUrl());
-
         return commentMsgVo;
     }
 

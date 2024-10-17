@@ -2,7 +2,6 @@ package pri.yqx.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import pri.yqx.dto.OrderMsgDto;
-import pri.yqx.entity.Good;
 import pri.yqx.entity.OrderMsg;
 import pri.yqx.vo.OrderMsgCountVo;
 import pri.yqx.vo.OrderMsgVo;

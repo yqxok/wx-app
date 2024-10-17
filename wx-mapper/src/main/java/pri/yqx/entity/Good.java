@@ -2,9 +2,8 @@ package pri.yqx.entity;
 
 
 import com.baomidou.mybatisplus.annotation.*;
-import com.baomidou.mybatisplus.extension.handlers.FastjsonTypeHandler;
-import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import lombok.Data;
+import lombok.experimental.Accessors;
 import pri.yqx.json.PicUrl;
 import pri.yqx.json.PicUrlJsonHandler;
 
@@ -14,6 +13,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
+@Accessors(chain = true)
 @TableName(autoResultMap = true)
 public class Good {
     @TableId

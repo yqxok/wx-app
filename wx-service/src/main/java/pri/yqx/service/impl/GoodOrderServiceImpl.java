@@ -9,10 +9,11 @@ import pri.yqx.common.ExpProcessor;
 import pri.yqx.dto.GoodOrderDto;
 import pri.yqx.dto.SimpleOrderDto;
 import pri.yqx.entity.*;
+import pri.yqx.exceptions.BusinessException;
 import pri.yqx.mapper.GoodOrderMapper;
 import pri.yqx.service.*;
+import pri.yqx.util.JwtUtil;
 import pri.yqx.util.MyBeanUtils;
-import pri.yqx.vo.OrderMsgVo;
 import pri.yqx.vo.SimpleOrderVo;
 
 import javax.annotation.Resource;
@@ -46,8 +47,6 @@ public class GoodOrderServiceImpl extends ServiceImpl<GoodOrderMapper, GoodOrder
                 .set(Good::getGoodNum,one.getGoodNum()-goodOrderDto.getNumber())
                 .set(one.getGoodNum()==goodOrderDto.getNumber(),Good::getStatus,1).update();
         return orderId;
-
-
     }
 
     @Override
@@ -66,7 +65,7 @@ public class GoodOrderServiceImpl extends ServiceImpl<GoodOrderMapper, GoodOrder
     public void validateOrderId(Long orderId) {
         Long count = this.lambdaQuery().eq(GoodOrder::getOrderId, orderId).count();
         if(count<1)
-            throw new RuntimeException("该orderId失效");
+            throw new BusinessException("该orderId失效");
     }
 
     @Override
@@ -82,7 +81,21 @@ public class GoodOrderServiceImpl extends ServiceImpl<GoodOrderMapper, GoodOrder
         }
         this.lambdaUpdate().eq(GoodOrder::getOrderId,goodOrderDto.getOrderId())
                 .set(GoodOrder::getStatus,goodOrderDto.getStatus()).update();
+    }
 
+    @Override
+    public void removeOrder(String token, Long orderId) {
+        Long userId = JwtUtil.getUserId(token);
+        GoodOrder one = this.lambdaQuery().eq(GoodOrder::getOrderId, orderId)
+                .select(GoodOrder::getDelivererId, GoodOrder::getReceiverId,GoodOrder::getStatus).one();
+        Integer status = one.getStatus();
+        if(status==0) throw new RuntimeException("无法删除未完成的订单");
+        if (!Objects.equals(one.getDelivererId(), userId)&&!Objects.equals(one.getReceiverId(),userId)) {
+            throw new RuntimeException("userId错误");
+        }else if(Objects.equals(one.getDelivererId(),userId)){
+            this.lambdaUpdate().eq(GoodOrder::getOrderId,orderId).set(GoodOrder::getDelivererDeleted,true).update();
+        }else
+            this.lambdaUpdate().eq(GoodOrder::getOrderId,orderId).set(GoodOrder::getReceiverDeleted,true).update();
     }
 
 

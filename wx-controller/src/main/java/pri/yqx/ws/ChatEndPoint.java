@@ -22,18 +22,20 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 public class ChatEndPoint implements ApplicationContextAware {
     private static  ApplicationContext applicationContext;
+
     //线程安全的hash表
     private static ConcurrentHashMap<Long, Session> sessionMap;
-
 
     private Long userId;
     @OnOpen
     public void onOpen(Session session, EndpointConfig endpointConfig) throws IOException {
-        Object token = endpointConfig.getUserProperties().get("token");
-        this.userId=this.verifyToken((String) token);
-
-        sessionMap.put(this.userId,session);
-
+        try {
+            Object token = endpointConfig.getUserProperties().get("token");
+            this.userId=this.verifyToken((String) token);
+            sessionMap.put(this.userId,session);
+        } catch (Exception e) {
+            log.warn("websocket连接失败",e);
+        }
     }
 
     @OnMessage
@@ -52,7 +54,8 @@ public class ChatEndPoint implements ApplicationContextAware {
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         ChatEndPoint.applicationContext=applicationContext;
-        sessionMap=(ConcurrentHashMap<Long, Session>) applicationContext.getBean("sessionMap");
+        if(sessionMap==null)
+            sessionMap=(ConcurrentHashMap<Long, Session>) applicationContext.getBean("sessionMap");
     }
     private Long verifyToken(String token) {//token验证成功返回userId
         if (token==null)

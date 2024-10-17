@@ -2,13 +2,15 @@ package pri.yqx.service.impl;
 
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pri.yqx.dto.OrderMsgDto;
 import pri.yqx.entity.OrderMsg;
 import pri.yqx.entity.User;
+import pri.yqx.exceptions.BusinessException;
 import pri.yqx.mapper.OrderMsgMapper;
-import pri.yqx.mapper.UserMapper;
+import pri.yqx.service.GoodOrderService;
 import pri.yqx.service.OrderMsgService;
 import pri.yqx.service.UserService;
 import pri.yqx.util.MyBeanUtils;
@@ -20,11 +22,14 @@ import java.util.List;
 
 @Service
 @Transactional
+@Slf4j
 public class OrderMsgServiceImpl extends ServiceImpl<OrderMsgMapper, OrderMsg> implements OrderMsgService {
     @Resource
     private OrderMsgMapper orderMsgMapper;
     @Resource
     private UserService userService;
+    @Resource
+    private GoodOrderService goodOrderService;
     @Override
     public OrderMsgVo getOrderMsgVo(Long orderMsgId) {
         return orderMsgMapper.getOrderMsgVo(orderMsgId);
@@ -37,10 +42,12 @@ public class OrderMsgServiceImpl extends ServiceImpl<OrderMsgMapper, OrderMsg> i
 
     @Override
     public Long saveOrderMsg(OrderMsgDto orderMsgDto) {
+        goodOrderService.validateOrderId(orderMsgDto.getOrderId());
+        userService.validateUserId(orderMsgDto.getSenderId());
+        userService.validateUserId(orderMsgDto.getReceiverId());
         OrderMsg orderMsg = MyBeanUtils.copyProperties(orderMsgDto, new OrderMsg());
         long orderMsgId = IdWorker.getId();
         orderMsg.setOrderMsgId(orderMsgId);
-
         save(orderMsg);
         this.userService.lambdaUpdate().eq(User::getUserId,orderMsgDto.getReceiverId())
                 .setSql("no_read_num = no_read_num+1").update();
@@ -56,7 +63,7 @@ public class OrderMsgServiceImpl extends ServiceImpl<OrderMsgMapper, OrderMsg> i
     public void validateOrderMsgId(Long orderMsgId) {
         Long count = this.lambdaQuery().eq(OrderMsg::getOrderMsgId, orderMsgId).count();
         if(count<1)
-            throw new RuntimeException("该orderMsgId无效");
+            throw new BusinessException("该orderMsgId无效");
     }
 
     @Override

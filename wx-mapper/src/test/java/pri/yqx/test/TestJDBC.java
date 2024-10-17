@@ -12,10 +12,7 @@ import pri.yqx.vo.*;
 
 import javax.annotation.Resource;
 import javax.sql.DataSource;
-import java.util.List;
-import java.util.Stack;
-
-import static org.apache.ibatis.ognl.DynamicSubscript.mid;
+import java.util.*;
 
 @Slf4j
 @SpringBootTest
@@ -27,66 +24,43 @@ public class TestJDBC {
     private List<PicUrl> picUrls;
 
     public static void main(String[] args) {
-        int[] nums={5,7,7,8,8,10};
-        searchRange(nums,8);
-    }
-    public static int[] searchRange(int[] nums, int target) {
-        if(nums.length<1)
-            return new int[]{-1,-1};
-        int l=0,r=nums.length-1,value=0, value1=nums.length-1;
-        if(target<=nums[0])
-            value=-1;
-        else {
-            while(l<=r){
-                int mid=l+(r-l)/2;
-                if(nums[mid]<target){
-                    value=mid;
-                    l=mid+1;
-                }else if(nums[mid]>=target)
-                    r=mid-1;
-            }
-        }
 
-        l=0;
-        r=nums.length;
-        if(target>=nums[nums.length-1])
-            value1=nums.length;
-        else {
-            while(l<=r){
-                int mid=l+(r-l)/2;
-                if(nums[mid]<=target){
-                    l=mid+1;
-                }else if(nums[mid]>target){
-                    value1=mid;
-                    r=mid-1;
-                }
+    }
+    public static int largestRectangleArea(int[] heights) {
+        int[] height=new int[heights.length+1];
+        for(int i=0;i<heights.length;i++)
+            height[i]=heights[i];
+        height[height.length-1]=0;
+        Stack<Integer> stack=new Stack<>();
+        stack.push(0);
+        int res=0;
+        for(int i=1;i<height.length;i++){
+            while(!stack.isEmpty()&&height[i]<height[stack.peek()]){
+                Integer pop = stack.pop();
+                int w=i-pop;
+                if(!stack.isEmpty())
+                    w=i-stack.peek()-1;
+                res=Math.max(res,w*height[pop]);
             }
+            stack.push(i);
         }
-        int min=-1,max=-1;
-        if(value+1< nums.length&&nums[value+1]==target){
-            min=value+1;
-            max=value+1;
-        }
-        if(value1-1>-1&&nums[value1-1]==target){
-            min=min==-1?value1-1:min;
-            max=value-1;
-        }
-        return new int[]{min,max};
+        return res;
     }
-    public static int mySqrt(int x) {
-        if(x==0)
-            return 0;
-        long l=1,r=x,value=1;
-        while(l<=r){
-            long mid=(l+r)/2;
-            if(mid*mid<=x){
-                value=mid;
-                l=mid+1;
-            }else if(mid*mid>x)
-                r=mid-1;
+
+    public static boolean check(Map<Character,Integer> map1,Map<Character,Integer> map2){
+        if(map2.size()<map1.size())
+            return false;
+        for(Map.Entry<Character,Integer> entry:map2.entrySet()){
+            Integer value = entry.getValue();
+            Character key = entry.getKey();
+            Integer orDefault = map1.getOrDefault(key, 0);
+            if(orDefault==0||value<orDefault)
+                return false;
         }
-        return (int) value;
+        return true;
     }
+
+
     @Test
     public void testJDBC(){
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);

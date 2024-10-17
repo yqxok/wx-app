@@ -10,8 +10,10 @@ import java.util.List;
 
 @Mapper
 public interface GoodMapper extends BaseMapper<Good> {
+    public List<Long> selectGoodId(int index, int size, String categoryName);
     public List<GoodVo> selectGoodVo(int index,int size,String categoryName);
     public GoodDetailVo getGoodDetailVo(Long goodId);
     public List<GoodVo> getGoodVoList(Long userId,Short status);
 
+    public List<GoodVo> getGoodVos(List<Long> noHitIds);
 }

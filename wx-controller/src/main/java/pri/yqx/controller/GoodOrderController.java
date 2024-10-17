@@ -45,10 +45,12 @@ public class GoodOrderController {
     @PutMapping("/status")
     public Result<String> updateOrderStatus(@RequestBody GoodOrderDto goodOrderDto){
         this.goodOrderService.updateStatus(goodOrderDto);
-//        this.goodOrderService.lambdaUpdate().eq(GoodOrder::getOrderId,goodOrderDto.getOrderId())
-//                .set(GoodOrder::getStatus,goodOrderDto.getStatus()).update();
-
         return Result.success(null,"订单状态修改成功");
+    }
+    @DeleteMapping("/{orderId}")
+    public Result<String> deleteOrder(@RequestHeader("token") String token, @PathVariable Long orderId){
+        goodOrderService.removeOrder(token,orderId);
+        return Result.success(null,"删除成功");
     }
 
 }

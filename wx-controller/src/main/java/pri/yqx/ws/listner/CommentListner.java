@@ -14,7 +14,6 @@ import pri.yqx.ws.GenericWsDto;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.websocket.Session;
-import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 @Component
@@ -40,7 +39,7 @@ public class CommentListner implements EventListner {
             session.getBasicRemote().sendText(JSON.toJSONString(genericWsDto));
 
         } catch (Exception e) {
-            log.warn("{}",e.getStackTrace());
+            log.warn("CommentListner序列化错误");
         }
 
     }

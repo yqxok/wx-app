@@ -1,12 +1,9 @@
 package pri.yqx.controller;
 
-import com.alibaba.fastjson.JSON;
-import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 import pri.yqx.common.Result;
 import pri.yqx.dto.LoginDto;
 import pri.yqx.dto.UserDto;
@@ -18,11 +15,9 @@ import pri.yqx.util.MyBeanUtils;
 import pri.yqx.vo.UserVo;
 
 import javax.annotation.Resource;
-import javax.validation.Validator;
-import javax.validation.constraints.Min;
-import java.util.Date;
+import javax.websocket.Session;
 import java.util.HashMap;
-import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @RestController
 @RequestMapping("/user")
@@ -31,11 +26,11 @@ import java.util.Map;
 public class UserController {
     @Resource
     private UserService userService;
-    @Resource
-    private Validator validator;
+
     @Resource
     private WeChatPoperties weChatPoperties;
-
+    @Resource
+    private ConcurrentHashMap<Long, Session> sessionMap;
 //    @PostMapping("/no/lgByC")
 //    public Result<UserVo> loginWithCode(@RequestBody LoginDto loginDto) {
 //        log.info("loginDto:{}",loginDto);
@@ -66,10 +61,9 @@ public class UserController {
     }
 
 
-    @PutMapping("/{userId}")
-    public Result<String> updateUser(@Validated @RequestBody UserDto userDto,@PathVariable Long userId){
+    @PutMapping
+    public Result<String> updateUser(@Validated @RequestBody UserDto userDto){
         User user = MyBeanUtils.copyProperties(userDto, new User());
-        user.setUserId(userId);
         userService.updateById(user);
         return Result.success(null,"保存成功");
     }
@@ -84,10 +78,9 @@ public class UserController {
     @GetMapping("/no/token")//使用token获取用户信息
     public Result<UserVo> getUserByToken(@RequestParam(required = true) String token){
         DecodedJWT verify = JwtUtil.verify(token);
-        String userId = verify.getClaim("userId").asString();
-        Long userId1 = Long.valueOf(userId);
-        User byId = this.userService.getById(userId1);
-        UserVo userVo = MyBeanUtils.copyProperties(byId, new UserVo());
+        Long userId = JwtUtil.getUserId(token);
+        User user = this.userService.getById(userId);
+        UserVo userVo = MyBeanUtils.copyProperties(user, new UserVo());
         return Result.success(userVo,"用户查询成功");
     }
     @GetMapping("/no/udToken")

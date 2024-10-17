@@ -3,7 +3,6 @@ package pri.yqx.controller;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.web.bind.annotation.*;
 import pri.yqx.common.Result;
-import pri.yqx.entity.CommentMsg;
 import pri.yqx.service.CommentMsgService;
 import pri.yqx.vo.CmMsgCountVo;
 import pri.yqx.vo.CommentMsgVo;
